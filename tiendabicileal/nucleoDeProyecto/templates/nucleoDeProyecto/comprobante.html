@@ -1,0 +1,141 @@
+{% extends 'nucleoDeProyecto/base.html' %}
+
+{% block bodyclase%}class="datosComprobante"{% endblock%}
+
+{% block seccionesTag %} 
+<ul>
+  <li class="active"><a href="{% url 'Index' %}">Productos</a></li>
+  <li><a class="nuestra-historia" href="{% url 'NuestraHistoria' %}">Nuestra historia</a></li>
+  <li><a href="{% url 'Contactanos' %}">Contáctenos</a></li>
+</ul>
+{% endblock %}
+
+{% block contenido %}
+<div class="comprobante">
+    <h1>Comprobante</h1>
+    <p id="nombre-comprador"> Comprador: </p>
+    <script>
+        const compradorParrafo = document.getElementById('nombre-comprador');
+      
+        // Obtenemos el nombre del almacenamiento local
+        const nombreGuardado = localStorage.getItem('nombre');
+      
+        // Actualizamos el contenido del párrafo con el nombre guardado
+        if (nombreGuardado) {
+          compradorParrafo.textContent += nombreGuardado;
+        }
+      </script>
+
+    <p id="dni-comprador"> DNI: </p>
+    
+    <script>
+        const dniParrafo = document.getElementById('dni-comprador');
+      
+        // Obtenemos el dni del almacenamiento local
+        const dniGuardado = localStorage.getItem('dni');
+      
+        // Actualizamos el contenido del párrafo con el dni guardado
+        if (dniGuardado) {
+          dniParrafo.textContent += dniGuardado;
+        }
+      </script>
+    <br><br>
+
+    <div class="numeroDeComprobante">
+
+    </div>
+
+    <br><br><br>
+
+    <script>
+        // Generamos número aleatorio de 8 dígitos
+        const numeroAleatorio = Math.floor(Math.random() * 100000000);
+
+        // Convertimos a cadena de texto y agregamos ceros a la izquierda
+        const numeroComprobante = numeroAleatorio.toString().padStart(8, '0');    
+
+        const divnumeroDeComprobante = document.querySelector('.numeroDeComprobante')
+        const nuevodivNumeroDeComprobante = document.createElement('div')
+        nuevodivNumeroDeComprobante.classList.add('div-comprobante')
+        nuevodivNumeroDeComprobante.innerHTML =   
+        `                           
+        <p>Numero de comprobante: ${numeroComprobante}</p>        
+        `
+
+        divnumeroDeComprobante.append(nuevodivNumeroDeComprobante)
+
+
+    </script>
+    <div class="detalleDeLaCompra">
+        <div class="tituloDetalleDeLaCompra">
+        <p>Detalle de la compra:</p>
+        </div>
+        <br>
+        <div class="suCompra">
+        
+        </div>
+
+        <div class="total-de-operacion">
+
+        </div>
+
+        <script>
+            const biciscompradas = JSON.parse(sessionStorage.getItem('productosFinalesSeleccionados'));
+            console.log(biciscompradas);
+            const suCompra = document.querySelector('.suCompra')
+            let totalDeTodo = 0;
+        
+            biciscompradas.forEach(producto =>{ 
+            
+            let totalaPagar = 0  
+            let precioEntero = parseInt(producto.precio.slice(1).replace('.',''))
+            totalaPagar = totalaPagar + parseInt(producto.cantidad * precioEntero) 
+            console.log("total a pagar: " +totalaPagar)
+            
+            const muestradeproductoscomprados = document.createElement('div')
+            muestradeproductoscomprados.classList.add('producto-comprado')
+            console.log(muestradeproductoscomprados)
+            
+            muestradeproductoscomprados.innerHTML =   
+            
+            `                           
+            <p> Bicicleta: ${producto.titulo}, Precio por unidad: ${producto.precio}, Cantidad: ${producto.cantidad}</p>
+            <br>
+            <p> Total: $${totalaPagar}</p>          
+            `
+            
+            suCompra.append(muestradeproductoscomprados)
+            totalDeTodo+=totalaPagar
+            })
+
+            const totalDeOperacion = document.querySelector('.total-de-operacion')
+            const ParrafoDeTotalFinal = document.createElement('div')
+            ParrafoDeTotalFinal.classList.add('total-final')
+
+            ParrafoDeTotalFinal.innerHTML = 
+            ` 
+            <p> Total final: </p>
+            <p> $${totalDeTodo} 
+            ` 
+            
+            totalDeOperacion.append(ParrafoDeTotalFinal)
+            
+            //hacemos que se borren los datos guardados del carrito, asi se pone en 0 al finalizar
+            //esta compra
+            sessionStorage.removeItem('productosFinalesSeleccionados');
+        </script> 
+
+        
+
+       
+
+    </div>
+    <br>
+    <p class="Retiro-de-compra">*** Para retirar su compra, deberá acercarse a nuestra direccion con este comprobante y su DNI ***</p>
+
+</div>
+<footer style="margin-top: 20px;">
+    <small>© Mayorista Bicileal</small>      
+</footer>
+{% endblock %}
+
